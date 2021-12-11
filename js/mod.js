@@ -1,7 +1,7 @@
 let modInfo = {
 	name: "The Papercraft Tree",
-	id: "adsaf",
-	author: "nobody",
+	id: "adsaf-papercraft",
+	author: "adsaf",
 	pointsName: "money",
 	modFiles: ["layers.js", "tree.js"],
 
