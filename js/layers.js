@@ -56,7 +56,7 @@ addLayer("f", {
     },
 
     effect() {
-        return player[this.layer].points.add(1).sqrt().pow(player[this.layer].quality.sqrt())
+        return player[this.layer].points.add(1).sqrt().pow(player[this.layer].quality.pow(.8))
     },
 
     tabFormat: [
@@ -100,7 +100,7 @@ addLayer("f", {
             },
 
             cost(x) {
-                return new Decimal(20).mul(new Decimal(1.1).pow(x))
+                return new Decimal(20).mul(new Decimal(1.2).pow(x))
             },
 
             canAfford() {
@@ -124,7 +124,7 @@ addLayer("f", {
             },
 
             cost(x) {
-                return new Decimal(45).mul(new Decimal(1.25).pow(x))
+                return new Decimal(45).mul(new Decimal(1.4).pow(x))
             },
 
             canAfford() {
