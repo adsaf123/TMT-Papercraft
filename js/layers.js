@@ -1,28 +1,68 @@
-addLayer("p", {
-    name: "prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
-    startData() { return {
-        unlocked: true,
-		points: new Decimal(0),
-    }},
-    color: "#4BDC13",
-    requires: new Decimal(10), // Can be a function that takes requirement increases into account
-    resource: "prestige points", // Name of prestige currency
-    baseResource: "points", // Name of resource prestige is based on
-    baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.5, // Prestige currency exponent
-    gainMult() { // Calculate the multiplier for main currency from bonuses
-        mult = new Decimal(1)
-        return mult
+addLayer("f", {
+    startData() {
+        return {
+            unlocked: true,
+            points: new Decimal(0),
+            quality: new Decimal(0),
+        }
     },
-    gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
+
+    row: 1,
+    name: "paper figures",
+    resource: "paper figures",
+    color: "#FFFF00",
+    baseResource: "money",
+    type: "custom",
+
+    baseAmount() {
+        return player.points
     },
-    row: 0, // Row the layer is in on the tree (0 is the first row)
-    hotkeys: [
-        {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
-    ],
-    layerShown(){return true}
+
+    getResetGain() {
+        return 1
+    },
+
+    getNextAt(canMax) {
+        return player.points.gte(10)
+    },
+
+    prestigeButtonText() {
+        return "Build 1 paper figure of quality " + format(tmp[this.layer].qualityFormula)
+    },
+
+    onPrestige(gain) {
+        player[this.layer].quality = tmp[this.layer].qualityChange
+    },
+
+    canReset() {
+        return tmp[this.layer].baseAmount.gte(10)
+    },
+
+    qualityFormula() {
+        return tmp[this.layer].baseAmount.log(10)
+    },
+
+    qualityChange() {
+        return player[this.layer].quality.times(player[this.layer].points).
+            add(tmp[this.layer].qualityFormula).
+            div(player[this.layer].points.add(1))
+    },
+
+    effect() {
+        return player[this.layer].points.add(1).pow(player[this.layer].quality.sqrt()).sqrt()
+    },
+
+    tabFormat: [
+        "main-display",
+        "prestige-button",
+        ["display-text", function() {
+            return "You will create a figure of quality " + format(tmp[this.layer].qualityFormula)
+        }],
+        ["display-text", function() {
+            return "Your collection have a quality of " + format(player[this.layer].quality)
+        }],
+        ["display-text", function() {
+            return "If you build figure now, your quality will change to " + format(tmp[this.layer].qualityChange)
+        }]
+    ]
 })

@@ -1,13 +1,13 @@
 let modInfo = {
-	name: "The ??? Tree",
-	id: "mymod",
+	name: "The Papercraft Tree",
+	id: "adsaf",
 	author: "nobody",
-	pointsName: "points",
+	pointsName: "money",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
@@ -43,6 +43,7 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	gain = gain.times(tmp["f"].effect)
 	return gain
 }
 
