@@ -42,7 +42,9 @@ addLayer("f", {
     },
 
     qualityFormula() {
-        return tmp[this.layer].baseAmount.log(new Decimal(10).times(buyableEffect("f", "scissors"))).pow(buyableEffect("f", "paper"))
+        return softcap(tmp[this.layer].baseAmount.log(new Decimal(10).times(buyableEffect("f", "scissors"))).pow(buyableEffect("f", "paper")), 
+            new Decimal(10), 
+            new Decimal(5).div(tmp[this.layer].baseAmount.log(new Decimal(10).times(buyableEffect("f", "scissors"))).pow(buyableEffect("f", "paper"))))
     },
 
     qualityChange() {
@@ -56,7 +58,9 @@ addLayer("f", {
     },
 
     effect() {
-        return player[this.layer].points.add(1).sqrt().pow(player[this.layer].quality.pow(.8))
+        return softcap(player[this.layer].points.add(1).sqrt().pow(player[this.layer].quality), 
+            new Decimal(1000), 
+            new Decimal(500).div(player[this.layer].points.add(1).sqrt().pow(player[this.layer].quality)))
     },
 
     tabFormat: [
@@ -188,7 +192,9 @@ addLayer("c", {
     },
 
     qualityFormula() {
-        return tmp[this.layer].baseAmount.log(new Decimal(5).times(buyableEffect("c", "trends"))).pow(buyableEffect("c", "stand")).pow(player.f.quality.sqrt())
+        return softcap(tmp[this.layer].baseAmount.log(new Decimal(5).times(buyableEffect("c", "trends"))).pow(buyableEffect("c", "stand")).pow(player.f.quality.sqrt()), 
+            new Decimal(10), 
+            new Decimal(5).div(tmp[this.layer].baseAmount.log(new Decimal(5).times(buyableEffect("c", "trends"))).pow(buyableEffect("c", "stand")).pow(player.f.quality.sqrt())))
     },
 
     qualityChange() {
@@ -202,7 +208,9 @@ addLayer("c", {
     },
 
     effect() {
-        return player[this.layer].points.add(1).pow(player[this.layer].quality)
+        return softcap(player[this.layer].points.add(1).pow(player[this.layer].quality), 
+            new Decimal(1000), 
+            new Decimal(500).div(player[this.layer].points.add(1).pow(player[this.layer].quality)))
     },
 
     tooltipLocked() {
@@ -253,7 +261,7 @@ addLayer("c", {
         "trends": {
             title: "Trends",
             display() {
-                return "Investigating into new trends will make your future collections have better impact on viewers (decreases quality's log base by 2% to minimum of 3)(compounding)<br><h3>Cost:</h3> " + format(tmp[this.layer].buyables[this.id].cost) + " money"
+                return "Investigating into new trends will make your future collections have better impact on viewers (decreases quality's log base by 1% to minimum of 3)(compounding)<br><h3>Cost:</h3> " + format(tmp[this.layer].buyables[this.id].cost) + " money"
             },
 
             cost(x) {
@@ -270,14 +278,14 @@ addLayer("c", {
             },
 
             effect() {
-                return new Decimal(0.98).pow(getBuyableAmount(this.layer, this.id)).max(3/5)
+                return new Decimal(0.99).pow(getBuyableAmount(this.layer, this.id)).max(3/5)
             }
         },
 
         "stand": {
             title: "Stand",
             display() {
-                return "Better stands for your collections will make them more attractive to viewers(quality^(1 + .1*x) to maximum of 2)<br><h3>Cost:</h3> " + format(tmp[this.layer].buyables[this.id].cost) + " money"
+                return "Better stands for your collections will make them more attractive to viewers(quality^(1 + .05*x) to maximum of 2)<br><h3>Cost:</h3> " + format(tmp[this.layer].buyables[this.id].cost) + " money"
             },
 
             cost(x) {
@@ -294,7 +302,7 @@ addLayer("c", {
             },
 
             effect() {
-                return new Decimal(.1).mul(getBuyableAmount(this.layer, this.id)).add(1).min(2)
+                return new Decimal(.05).mul(getBuyableAmount(this.layer, this.id)).add(1).min(2)
             }
         } 
     }
