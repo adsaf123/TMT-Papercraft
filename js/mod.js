@@ -44,6 +44,7 @@ function getPointGen() {
 
 	let gain = new Decimal(1)
 	gain = gain.times(tmp["f"].effect)
+	gain = gain.times(tmp["c"].effect)
 	return gain
 }
 
